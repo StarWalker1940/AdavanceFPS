@@ -5,6 +5,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
+#include "EquippableToolDefinition.h"
+#include "InventoryComponent.h"
+#include "EquippableToolBase.h"
 #include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
@@ -20,6 +23,9 @@ AFPSCharacter::AFPSCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(SkeletalMeshComp, FName("head"));
 	CameraComp->bUsePawnControlRotation = true;
+
+	InventoryComp = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComp"));
+
 }
 
 // Called when the game starts or when spawned
@@ -32,6 +38,30 @@ void AFPSCharacter::BeginPlay()
 		UEnhancedInputLocalPlayerSubsystem* EnhancedSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		EnhancedSubsystem->AddMappingContext(CharectMoveContext,0);
 	}
+}
+
+void AFPSCharacter::AttachTool(UEquippableToolDefinition* ToolDefinition)
+{
+	if (!IsToolAreadyEquip(ToolDefinition))
+	{
+		AEquippableToolBase* ToolToEquiped = GetWorld()->SpawnActor< AEquippableToolBase>(ToolDefinition->ToolAsset, this->GetTransform());
+
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+
+		ToolToEquiped->AttachToActor(this, AttachmentRules);
+		ToolToEquiped->AttachToComponent(SkeletalMeshComp, AttachmentRules, FName(TEXT("HandGrip_R")));
+		//TODO  FName FString FText互相转化
+	}
+}
+
+bool AFPSCharacter::IsToolAreadyEquip(UEquippableToolDefinition* ToolDefinition)
+{
+	for (UEquippableToolDefinition* InventoryItem : InventoryComp->ToolInventory)
+	{
+		if (ToolDefinition->ID == InventoryItem->ID)
+			return true;
+	}
+	return false;
 }
 
 void AFPSCharacter::Move(const FInputActionValue& Value)

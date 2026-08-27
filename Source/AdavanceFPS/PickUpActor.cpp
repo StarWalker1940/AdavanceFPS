@@ -81,15 +81,17 @@ void APickUpActor::InitializePickUp()
 
 		check(ItemDataRow!=nullptr);
 		
-		if (!ReferenceItem)
+		if (ReferenceItem)
 		{
-			ReferenceItem = NewObject< UItemDefinition>(this, UItemDefinition::StaticClass());
+			UEngine::CopyPropertiesForUnrelatedObjects(ItemDataRow->ItemBase.Get(), ReferenceItem);
+		}
+		else
+		{
+			ReferenceItem = ItemDataRow->ItemBase.Get();
+			ReferenceItem = ReferenceItem->CreateItemCopy();
 		}
 		
-		ReferenceItem->ID = ItemDataRow->ID;
-		ReferenceItem->ItemType = ItemDataRow->ItemType;
-		ReferenceItem->ItemText = ItemDataRow->ItemText;
-		ReferenceItem->WorldMesh = ItemDataRow->ItemBase->WorldMesh;
+		
 
 		StaticMeshComp->SetStaticMesh(ReferenceItem->WorldMesh.LoadSynchronous());
 		StaticMeshComp->SetVisibility(true);

@@ -11,6 +11,11 @@ class UInputMappingContext;
 class UInputAction;
 class UCameraComponent;
 
+class UInventoryComponent;
+class AEquippableToolBase;
+class UEquippableToolDefinition;
+
+
 UCLASS()
 class ADAVANCEFPS_API AFPSCharacter : public ACharacter
 {
@@ -41,6 +46,23 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> UseAction;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr< UInventoryComponent> InventoryComp;
+
+	UPROPERTY()
+	TObjectPtr<AEquippableToolBase> EquipedTool;
+
+	
+
+	UFUNCTION()
+	void AttachTool(UEquippableToolDefinition* ToolDefinition);
+
+	UFUNCTION()
+	bool IsToolAreadyEquip(UEquippableToolDefinition* ToolDefinition);
 
 	void Move(const FInputActionValue& Value);
 
