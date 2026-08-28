@@ -22,7 +22,7 @@ void AEquippableToolBase::BeginPlay()
 	
 }
 
-void AEquippableToolBase::use()
+void AEquippableToolBase::Use()
 {
 }
 

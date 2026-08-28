@@ -43,7 +43,7 @@ public:
 	TObjectPtr<UInputMappingContext> ToolMappingContext;
 	
 	UFUNCTION()//TODO
-	virtual void use();
+	virtual void Use();
 
 	UFUNCTION()
 	virtual void BindInputAction(const UInputAction* ActionToBind);

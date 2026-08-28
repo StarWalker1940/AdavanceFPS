@@ -92,7 +92,6 @@ void APickUpActor::InitializePickUp()
 			ReferenceItem = ReferenceItem->CreateItemCopy();
 		}
 		
-		
 
 		StaticMeshComp->SetStaticMesh(ReferenceItem->WorldMesh.LoadSynchronous());
 		StaticMeshComp->SetVisibility(true);
