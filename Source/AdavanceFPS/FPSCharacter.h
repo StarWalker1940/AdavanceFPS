@@ -56,7 +56,6 @@ protected:
 	UPROPERTY()
 	TObjectPtr<AEquippableToolBase> EquipedTool;
 
-	
 
 	UFUNCTION()
 	void AttachTool(UEquippableToolDefinition* ToolDefinition);
@@ -74,5 +73,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION()
+	void GiveItem(UItemDefinition* ItemDefinition);
 	
 };

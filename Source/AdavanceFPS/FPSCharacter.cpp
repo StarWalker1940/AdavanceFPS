@@ -17,11 +17,11 @@ AFPSCharacter::AFPSCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComp"));
-	SkeletalMeshComp->SetupAttachment(RootComponent);
+	SkeletalMeshComp->SetupAttachment(GetMesh());
 	SkeletalMeshComp->SetOnlyOwnerSee(true);
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
-	CameraComp->SetupAttachment(SkeletalMeshComp, FName("head"));
+	CameraComp->SetupAttachment(SkeletalMeshComp, FName("Head"));
 	CameraComp->bUsePawnControlRotation = true;
 
 	InventoryComp = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComp"));
@@ -51,6 +51,23 @@ void AFPSCharacter::AttachTool(UEquippableToolDefinition* ToolDefinition)
 		ToolToEquiped->AttachToActor(this, AttachmentRules);
 		ToolToEquiped->AttachToComponent(SkeletalMeshComp, AttachmentRules, FName(TEXT("HandGrip_R")));
 		//TODO  FName FString FText互相转化
+
+		SkeletalMeshComp->SetAnimInstanceClass(ToolToEquiped->FirstPersonToolAnim->GeneratedClass);
+		GetMesh()->SetAnimInstanceClass(ToolToEquiped->ThirdPersonToolAnim->GeneratedClass);
+
+		InventoryComp->ToolInventory.Add(ToolDefinition);
+		ToolToEquiped->OwningCharacter = this;
+		EquipedTool = ToolToEquiped;
+
+		if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+		{
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+			{
+				Subsystem->AddMappingContext(ToolToEquiped->ToolMappingContext, 1);
+			}
+
+			ToolToEquiped->BindInputAction(UseAction);
+		}
 	}
 }
 
@@ -103,5 +120,27 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	EnhancedComp->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Move);
 	EnhancedComp->BindAction(LookAtAction, ETriggerEvent::Triggered, this, &AFPSCharacter::LookAt);
+}
+
+void AFPSCharacter::GiveItem(UItemDefinition* ItemDefinition)
+{
+	switch (ItemDefinition->ItemType)
+	{
+	case EItemType::Tool:
+	{
+		UEquippableToolDefinition* EquipTool = Cast< UEquippableToolDefinition>(ItemDefinition);
+		if (ensure(EquipTool != nullptr))
+		{
+			AttachTool(EquipTool);
+		}
+	}
+
+	case EItemType::Comsumable:
+	{
+
+	}
+	default:
+		break;
+	}
 }
 

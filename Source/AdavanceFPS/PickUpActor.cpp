@@ -55,6 +55,7 @@ void APickUpActor::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent
 	if (Character != nullptr)
 	{
 		bIsPickedUp = true;
+		Character->GiveItem(ReferenceItem);
 
 		SphereComponent->OnComponentBeginOverlap.RemoveAll(this);
 		StaticMeshComp->SetVisibility(false);
