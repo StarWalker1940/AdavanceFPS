@@ -144,3 +144,21 @@ void AFPSCharacter::GiveItem(UItemDefinition* ItemDefinition)
 	}
 }
 
+FVector AFPSCharacter::GetCameraTargetLocation()
+{
+	FVector TargetVector = FVector::ZeroVector;
+	UWorld* const World = GetWorld();
+
+	if (World!=nullptr)
+	{
+		FHitResult HitResult;
+		const FVector TraceStart = CameraComp->GetComponentLocation();
+		const FVector TraceEnd = TraceStart + CameraComp->GetForwardVector() * 10000.0f;
+
+		World->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+		TargetVector = HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd;
+	}
+
+	return TargetVector;
+}
+

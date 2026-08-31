@@ -6,6 +6,7 @@
 #include "EquippableToolBase.h"
 #include "DartLauncher.generated.h"
 
+class AFirstPersonProjectile;
 /**
  * 
  */
@@ -18,7 +19,8 @@ class ADAVANCEFPS_API ADartLauncher : public AEquippableToolBase
 
 	virtual void BindInputAction(const UInputAction* ActionToBind) override;
 
-	virtual void Tick(float DeltaTime) override;
+	//virtual void Tick(float DeltaTime) override;
 	
-	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AFirstPersonProjectile> ProjectileClass;
 };

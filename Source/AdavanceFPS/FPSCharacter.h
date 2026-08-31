@@ -75,5 +75,8 @@ public:
 
 	UFUNCTION()
 	void GiveItem(UItemDefinition* ItemDefinition);
+
+	UFUNCTION()
+	FVector GetCameraTargetLocation();
 	
 };
